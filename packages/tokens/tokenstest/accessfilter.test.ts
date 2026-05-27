@@ -39,7 +39,7 @@ expect(mockresp.status).toHaveBeenCalledWith(400)
 expect(mocknext).not.toHaveBeenCalled()
 })
 
-it("if token is not htere then it should fail",async()=>{
+it("if invalid token is there",async()=>{
     mockreq.headers={authorization:"Bearer invalid_token"}
 accessfilter(mockreq as customrequest,mockresp as Response,mocknext);
 (jwt.verify as jest.Mock).mockImplementation(()=>{
@@ -47,22 +47,24 @@ accessfilter(mockreq as customrequest,mockresp as Response,mocknext);
 })
 expect(jwt.verify).toHaveBeenCalledWith("invalid_token","fdhhjtyjrdghrfjtrfgdfjr")
 expect(mockresp.status).toHaveBeenCalledWith(400)
-expect(mockresp.json).toHaveBeenCalledWith({message:"access filter failed"})
+expect(mockresp.json).toHaveBeenCalledWith({success:false,message:"access filter failed"})
 expect(mocknext).not.toHaveBeenCalled()
 })
 
-it("if token is not htere then it should fail",async()=>{
+it("if valid token is there",async()=>{
     mockreq.headers={authorization:"Bearer valid_token"}
     const payload={
         id:"12345",
         key:"fdhhjtyjrdghrfjtrfgdfjr"
     }as {id:string,key:string}
-accessfilter(mockreq as customrequest,mockresp as Response,mocknext);
-(jwt.verify as jest.Mock).mockReturnValue({payload})
 
+(jwt.verify as jest.Mock).mockReturnValue(payload)
+accessfilter(mockreq as customrequest,mockresp as Response,mocknext);
 expect(jwt.verify).toHaveBeenCalledWith("valid_token","fdhhjtyjrdghrfjtrfgdfjr")
 expect(mockreq.id).toBe("12345")
-expect(mocknext).not.toHaveBeenCalled()
+expect(mockresp.status).not.toHaveBeenCalled()
+expect(mockresp.json).not.toHaveBeenCalled()
+expect(mocknext).toHaveBeenCalledTimes(1)
 })
 
 
