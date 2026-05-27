@@ -1,0 +1,1 @@
+{"version":3,"file":"accessfilter.d.ts","sourceRoot":"","sources":["../../src/filter/accessfilter.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,YAAY,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAG1D,MAAM,WAAW,aAAc,SAAQ,OAAO;IAC1C,EAAE,EAAC,MAAM,CAAA;CACZ;AACD,eAAO,MAAM,YAAY,GAAE,KAAI,aAAa,EAAC,MAAK,QAAQ,EAAC,MAAK,YAAY,mDAc3E,CAAA"}
