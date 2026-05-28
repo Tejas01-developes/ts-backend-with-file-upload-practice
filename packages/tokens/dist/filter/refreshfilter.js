@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken';
 import { accesstoken } from '../tokengenerator/generatetoken.js';
 export const refreshfilter = (req, resp) => {
     const refreshh = req.cookies.refresh;
-    console.log(refreshh);
     if (!refreshh) {
         return resp.status(400).json({ success: false, message: "no refresh token" });
     }
