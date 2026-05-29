@@ -103,56 +103,56 @@ resp.cookie("refresh",refresh,{
 
 
     
-    export const geturl=async(req:Request,resp:Response)=>{
-        const{filename,filetype}=req.query as {
-            filename:string,
-            filetype:string
-        };
-        if(!filename || !filetype){
-            return resp.status(400).json({success:false,message:"filename and filetype is not there"})
-        }
-        const uniquename=Date.now() + "_" + filename
-        try{
-        const command=new PutObjectCommand({
-            Bucket:process.env.BUCKET_NAME as string,
-            Key:uniquename,
-            ContentType:filetype
-        })
+    // export const geturl=async(req:Request,resp:Response)=>{
+    //     const{filename,filetype}=req.query as {
+    //         filename:string,
+    //         filetype:string
+    //     };
+    //     if(!filename || !filetype){
+    //         return resp.status(400).json({success:false,message:"filename and filetype is not there"})
+    //     }
+    //     const uniquename=Date.now() + "_" + filename
+    //     try{
+    //     const command=new PutObjectCommand({
+    //         Bucket:process.env.BUCKET_NAME as string,
+    //         Key:uniquename,
+    //         ContentType:filetype
+    //     })
 
-        const uploadurl=await getSignedUrl(s3client,command,{expiresIn:300})
+    //     const uploadurl=await getSignedUrl(s3client,command,{expiresIn:300})
       
-        return resp.status(200).json({success:true,uploadurl,uniquename})
-    }catch(err){
-        console.log(err)
-        return resp.status(400).json({success:false,message:"upload failed"})
-    }
-    }
+    //     return resp.status(200).json({success:true,uploadurl,uniquename})
+    // }catch(err){
+    //     console.log(err)
+    //     return resp.status(400).json({success:false,message:"upload failed"})
+    // }
+    // }
 
 
 
 
 
-    interface idreq extends Request{
-        id?:string
-    }
-export const dbindoc=async(req:idreq,resp:Response)=>{
-const{filename,filetype}=req.body as {
-filename:string,
-filetype:string
-}
+//     interface idreq extends Request{
+//         id?:string
+//     }
+// export const dbindoc=async(req:idreq,resp:Response)=>{
+// const{filename,filetype}=req.body as {
+// filename:string,
+// filetype:string
+// }
 
-if(!filename || !filetype){
-    return resp.status(400).json({success:false,message:"filename and filetype is not there"})
-}
-const userid=req.id
-if(!userid){
-    return resp.status(400).json({success:false,message:"user id is not there"})
-}
-console.log(userid)
-try{
-await doccollection.create({userid,key:filename,filetype})
-return resp.status(200).json({success:true,message:"metadata in the db"})
-}catch(err){
-    return resp.status(400).json({success:false,message:"db metadata insertion failed"})
-}
-}
+// if(!filename || !filetype){
+//     return resp.status(400).json({success:false,message:"filename and filetype is not there"}) 
+// }
+// const userid=req.id
+// if(!userid){
+//     return resp.status(400).json({success:false,message:"user id is not there"})
+// }
+// console.log(userid)
+// try{
+// await doccollection.create({userid,key:filename,filetype})
+// return resp.status(200).json({success:true,message:"metadata in the db"})
+// }catch(err){
+//     return resp.status(400).json({success:false,message:"db metadata insertion failed"})
+// }
+// }

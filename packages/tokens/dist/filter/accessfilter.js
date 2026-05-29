@@ -1,7 +1,9 @@
 import jwt from 'jsonwebtoken';
 export const accessfilter = (req, resp, next) => {
+    console.log("in the access filter");
     const token = req.headers.authorization;
     const access = token?.split(" ")[1];
+    console.log("access", access);
     if (!access) {
         return resp.status(400).json({ success: false, message: "no access token" });
     }

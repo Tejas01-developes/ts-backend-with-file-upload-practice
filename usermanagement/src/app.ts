@@ -1,9 +1,10 @@
 import express from 'express';
 import dbconnection from '@packages/databaseconnect';
 import dotenv from 'dotenv';
-import route from './routes/route.js';
+
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import route from './routes/routes.js';
 dotenv.config();
 
 const app=express();

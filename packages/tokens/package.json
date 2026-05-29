@@ -5,13 +5,11 @@
   "types": "./dist/index.d.ts",
   "packageManager": "yarn@4.12.0",
   "devDependencies": {
-    "@types/express": "^5",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.8.0"
   },
   "dependencies": {
     "@types/supertest": "^7.2.0",
-    "express": "^5.2.1",
     "jest": "^30.4.2",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.11"
