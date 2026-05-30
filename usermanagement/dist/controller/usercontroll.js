@@ -3,6 +3,10 @@ import bcrypt from 'bcrypt';
 import { accesstoken, refreshtoken } from '@packages/tokens';
 import tokencollection2 from "../schemas/tokenschema.js";
 import dotenv from 'dotenv';
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { s3client } from '@packages/AWS setup';
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import doccollection from "../schemas/docscgema.js";
 dotenv.config();
 export const registeruser = async (req, resp) => {
     const { name, email, password } = req.body;
@@ -80,49 +84,43 @@ export const getusers = async (req, resp) => {
         return resp.status(400).json({ success: false, message: "get users failed" });
     }
 };
-// export const geturl=async(req:Request,resp:Response)=>{
-//     const{filename,filetype}=req.query as {
-//         filename:string,
-//         filetype:string
-//     };
-//     if(!filename || !filetype){
-//         return resp.status(400).json({success:false,message:"filename and filetype is not there"})
-//     }
-//     const uniquename=Date.now() + "_" + filename
-//     try{
-//     const command=new PutObjectCommand({
-//         Bucket:process.env.BUCKET_NAME as string,
-//         Key:uniquename,
-//         ContentType:filetype
-//     })
-//     const uploadurl=await getSignedUrl(s3client,command,{expiresIn:300})
-//     return resp.status(200).json({success:true,uploadurl,uniquename})
-// }catch(err){
-//     console.log(err)
-//     return resp.status(400).json({success:false,message:"upload failed"})
-// }
-// }
-//     interface idreq extends Request{
-//         id?:string
-//     }
-// export const dbindoc=async(req:idreq,resp:Response)=>{
-// const{filename,filetype}=req.body as {
-// filename:string,
-// filetype:string
-// }
-// if(!filename || !filetype){
-//     return resp.status(400).json({success:false,message:"filename and filetype is not there"}) 
-// }
-// const userid=req.id
-// if(!userid){
-//     return resp.status(400).json({success:false,message:"user id is not there"})
-// }
-// console.log(userid)
-// try{
-// await doccollection.create({userid,key:filename,filetype})
-// return resp.status(200).json({success:true,message:"metadata in the db"})
-// }catch(err){
-//     return resp.status(400).json({success:false,message:"db metadata insertion failed"})
-// }
-// }
+export const geturl = async (req, resp) => {
+    const { filename, filetype } = req.query;
+    console.log(filename, filetype);
+    if (!filename || !filetype) {
+        return resp.status(400).json({ success: false, message: "filename and filetype is not there" });
+    }
+    const uniquename = Date.now() + "_" + filename;
+    try {
+        const command = new PutObjectCommand({
+            Bucket: process.env.BUCKET_NAME,
+            Key: uniquename,
+            ContentType: filetype
+        });
+        const uploadurl = await getSignedUrl(s3client, command, { expiresIn: 300 });
+        return resp.status(200).json({ success: true, uploadurl, uniquename });
+    }
+    catch (err) {
+        console.log(err);
+        return resp.status(400).json({ success: false, message: "upload failed" });
+    }
+};
+export const dbindoc = async (req, resp) => {
+    const { filename, filetype } = req.body;
+    if (!filename || !filetype) {
+        return resp.status(400).json({ success: false, message: "filename and filetype is not there" });
+    }
+    const userid = req.id;
+    if (!userid) {
+        return resp.status(400).json({ success: false, message: "user id is not there" });
+    }
+    console.log(userid);
+    try {
+        await doccollection.create({ userid, key: filename, filetype });
+        return resp.status(200).json({ success: true, message: "metadata in the db" });
+    }
+    catch (err) {
+        return resp.status(400).json({ success: false, message: "db metadata insertion failed" });
+    }
+};
 //# sourceMappingURL=usercontroll.js.map
