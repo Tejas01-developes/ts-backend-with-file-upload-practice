@@ -16,8 +16,8 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use("/apis", route);
-app.listen(3000, async () => {
+app.listen(process.env.PORT || 3000, async () => {
     await dbconnection.connect();
-    console.log("server started on the port 3000");
+    console.log(`server started on the port ${process.env.PORT}`);
 });
 //# sourceMappingURL=app.js.map

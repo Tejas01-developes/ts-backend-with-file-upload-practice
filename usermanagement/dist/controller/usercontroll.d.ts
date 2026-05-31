@@ -7,5 +7,9 @@ interface idreq extends Request {
     id?: string;
 }
 export declare const dbindoc: (req: idreq, resp: Response) => Promise<Response<any, Record<string, any>>>;
+interface madereq extends Request {
+    id?: string;
+}
+export declare const getimg: (req: madereq, resp: Response) => Promise<Response<any, Record<string, any>> | undefined>;
 export {};
 //# sourceMappingURL=usercontroll.d.ts.map

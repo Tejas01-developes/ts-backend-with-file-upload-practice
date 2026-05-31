@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { accesstoken, refreshtoken } from '@packages/tokens';
 import tokencollection2 from "../schemas/tokenschema.js";
 import dotenv from 'dotenv';
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3client } from '@packages/AWS setup';
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import doccollection from "../schemas/docscgema.js";
@@ -114,13 +114,46 @@ export const dbindoc = async (req, resp) => {
     if (!userid) {
         return resp.status(400).json({ success: false, message: "user id is not there" });
     }
-    console.log(userid);
     try {
         await doccollection.create({ userid, key: filename, filetype });
         return resp.status(200).json({ success: true, message: "metadata in the db" });
     }
     catch (err) {
         return resp.status(400).json({ success: false, message: "db metadata insertion failed" });
+    }
+};
+export const getimg = async (req, resp) => {
+    const userid = req.id;
+    if (!userid) {
+        return resp.status(400).json({ sucess: false, message: "userid is not there" });
+    }
+    const res = await doccollection.findOne({ userid });
+    if (!res) {
+        return resp.status(400).json({ success: false, message: "no result" });
+    }
+    const key = res.key.trim();
+    console.log(key);
+    try {
+        const getcommand = new GetObjectCommand({
+            Bucket: process.env.BUCKET_NAME,
+            Key: key
+        });
+        // const getpresign=await getSignedUrl(s3client,getcommand,{expiresIn:150})
+        const s3resp = await s3client.send(getcommand);
+        if (s3resp.ContentType) {
+            resp.setHeader("Content-Type", s3resp.ContentType);
+        }
+        if (s3resp.Body) {
+            s3resp.Body.pipe(resp);
+        }
+        else {
+            // return resp.status(200).json({success:true,image:getpresign})
+            return resp.status(400).json({ success: false, message: "no image" });
+        }
+    }
+    catch (err) {
+        console.log(err);
+        return resp.status(400).json({ success: false, message: "image loading failed" });
     }
 };
 //# sourceMappingURL=usercontroll.js.map
